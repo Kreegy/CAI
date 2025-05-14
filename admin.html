@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Competency Based Assessment</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body onload="adminAuth()">
+    <div class="admin-container">
+        <nav class="admin-nav">
+            <h1>Admin Dashboard</h1>
+            <a href="index.html" class="nav-link">Go to Assessment Page</a>
+        </nav>
+
+        <div class="admin-sections">
+            <!-- Students Management Section -->
+            <section class="admin-section" id="students-section">
+                <h2>Manage Students</h2>
+                <button onclick="openModal('studentModal')" class="add-btn">Add New Student</button>
+                <!-- Student Modal -->
+                <div id="studentModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeModal('studentModal')">&times;</span>
+                        <h3>Add/Edit Student</h3>
+                        <div class="modal-form">
+                            <input type="text" id="studentId" placeholder="Student ID">
+                            <input type="text" id="studentName" placeholder="Student Name">
+                            <select id="studentClass">
+                                <option value="S3">S3</option>
+                                <option value="S4">S4</option>
+                            </select>
+                            <button onclick="addStudent(); closeModal('studentModal')">Save Student</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bulk-upload-section">
+                    <h3>Bulk Upload Students</h3>
+                    <div class="upload-container">
+                        <a href="student_template.csv" download class="template-link">Download Template</a>
+                        <input type="file" id="csvFileInput" accept=".csv" class="file-input">
+                        <button onclick="uploadCSV()" class="upload-btn">Upload CSV</button>
+                    </div>
+                    <div id="uploadStatus" class="upload-status"></div>
+                </div>
+                <div class="admin-table-container">
+                    <table id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Subjects Management Section -->
+            <section class="admin-section" id="subjects-section">
+                <h2>Manage Subjects</h2>
+                <button onclick="openModal('subjectModal')" class="add-btn">Add New Subject</button>
+                <!-- Subject Modal -->
+                <div id="subjectModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeModal('subjectModal')">&times;</span>
+                        <h3>Add/Edit Subject</h3>
+                        <div class="modal-form">
+                            <input type="text" id="subjectCode" placeholder="Subject Code">
+                            <input type="text" id="subjectName" placeholder="Subject Name">
+                            <button onclick="addSubject(); closeModal('subjectModal')">Save Subject</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-table-container">
+                    <table id="subjectsTable">
+                        <thead>
+                            <tr>
+                                <th>Subject Code</th>
+                                <th>Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subjectsTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Competencies Management Section -->
+            <section class="admin-section" id="competencies-section">
+                <h2>Manage Subject Competencies</h2>
+                <button onclick="openModal('competencyModal')" class="add-btn">Add New Competency</button>
+                <!-- Competency Modal -->
+                <div id="competencyModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeModal('competencyModal')">&times;</span>
+                        <h3>Add/Edit Competency</h3>
+                        <div class="modal-form" id="competencyForm">
+                            <input type="hidden" id="competencyId">
+                            <select id="competencySubject">
+                                <option value="">Select Subject</option>
+                            </select>
+                            <textarea id="competencyDescription" placeholder="Competency Description"></textarea>
+                            <button onclick="addCompetency()">Save Competency</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-table-container">
+                    <table id="competenciesTable">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Competency Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="competenciesTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="admin.js"></script>
+</body>
+<script>
+function adminAuth() {
+    var pass = prompt('Enter admin password:');
+    if (pass !== 'kreegy1') {
+        alert('Incorrect password!');
+        window.location.href = 'index.html';
+    }
+}
+</script>
+</html>
