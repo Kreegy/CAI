@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Implementation Scores</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="project.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="admin-nav">
+            <a href="admin.html" class="nav-link">Admin Dashboard</a>
+            <a href="index.html" class="nav-link">Assessment Page</a>
+        </nav>
+        <div class="school-details">
+            <div class="form-group">
+                <label>Exam Year</label>
+                <input type="text" id="examYear" value="2025" readonly>
+            </div>
+            <div class="form-group">
+                <label>Center/CA No.</label>
+                <input type="text" id="centerNo" value="U1176" readonly>
+            </div>
+            <div class="form-group">
+                <label>School Name</label>
+                <input type="text" id="schoolName" value="MAWOGOLA HIGH" readonly>
+            </div>
+            <div class="form-group">
+                <label>Class</label>
+                <select id="class">
+                    <option value="S3">S3</option>
+                    <option value="S4">S4</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Term</label>
+                <select id="term">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Competency</label>
+                <select id="competence">
+                    <option value="PROJECT PLANING">PROJECT PLANING</option>
+                    <option value="PROJECT IMPLEMENTATION">PROJECT IMPLEMENTATION</option>
+                    <option value="PROJECT REPORTING">PROJECT REPORTING</option>
+                    <option value="PROJECT DESSEMINATION">PROJECT DISSEMINATION</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="competency-section">
+            <div class="search-section">
+                <input type="text" id="searchStudent" placeholder="Type here to search learner by name" onkeyup="searchStudents()">
+            </div>
+        </div>
+
+        <div class="table-container table-scroll">
+            <table id="projectTable">
+                <thead>
+                    <tr>
+                        <th>Learner Id</th>
+                        <th>Learner Name</th>
+                        <th>Gathers resources</th>
+                        <th>Uses the gathered resources</th>
+                        <th>Engages stakeholders</th>
+                        <th>Creates a product</th>
+                        <th>Critical thinking</th>
+                        <th>Communication</th>
+                        <th>Creativity and innovation</th>
+                        <th>Cooperation</th>
+                        <th>Mathematical competence</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                    <!-- Student data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="button-container">
+            <button onclick="saveData()" class="save-btn">Save</button>
+            <button onclick="printData()" class="print-btn">Print</button>
+            <button onclick="exportToExcel()" class="export-btn">Export to Excel</button>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="project.js"></script>
+    <script>
+      function exportToExcel() {
+        // Get the table element
+        const table = document.getElementById('projectTable');
+        
+        // Create a clone of the table to modify for export
+        const tableClone = table.cloneNode(true);
+        
+        // Replace all input elements with their values
+        const inputs = tableClone.querySelectorAll('input.score-input');
+        inputs.forEach(input => {
+          const value = input.value;
+          const cell = input.parentNode;
+          cell.textContent = value;
+        });
+        
+        // Create workbook and export
+        const wb = XLSX.utils.table_to_book(tableClone);
+        XLSX.writeFile(wb, 'project_scores.xlsx');
+      }
+    </script>
+</body>
+</html>
