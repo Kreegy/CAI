@@ -10,6 +10,7 @@
     <div class="container">
         <nav class="admin-nav">
             <a href="admin.html" class="nav-link">Admin Dashboard</a>
+            <a href="project.html" class="nav-link">Project Scores</a>
         </nav>
         <div class="school-details">
             <div class="form-group">
@@ -102,8 +103,70 @@
     <script src="app.js"></script>
     <script>
       function exportToExcel() {
-        var wb = XLSX.utils.table_to_book(document.getElementById('assessmentTable'));
-        XLSX.writeFile(wb, 'assessment_data.xlsx');
+        const table = document.getElementById('assessmentTable');
+        const headerRows = table.querySelectorAll('thead tr');
+        const dataRows = table.querySelectorAll('tbody tr');
+        const data = [];
+        
+        // Create modified header rows
+        // First row with level headers
+        const firstHeaderRow = Array.from(headerRows[0].querySelectorAll('th')).map(cell => cell.textContent);
+        // Insert an extra column for student name after student ID
+        firstHeaderRow.splice(1, 0, ""); // Add empty cell for student name in first row
+        data.push(firstHeaderRow);
+        
+        // Second row with subject/generic headers
+        const secondHeaderRow = Array.from(headerRows[1].querySelectorAll('th')).map(cell => cell.textContent);
+        // Insert student name header after student ID
+        secondHeaderRow.splice(0, 1, "Student ID", "Student Name"); // Replace "Students" with "Student ID" and add "Student Name"
+        data.push(secondHeaderRow);
+        
+        // Add data rows
+        dataRows.forEach(row => {
+          // Skip rows that are hidden by search
+          if (row.style.display === 'none') return;
+          
+          const cells = row.querySelectorAll('td');
+          const rowData = [];
+          
+          // Process each cell
+          cells.forEach(cell => {
+            // First cell contains student ID and name
+            if (cell === cells[0]) {
+              const studentInfo = cell.querySelectorAll('div');
+              if (studentInfo.length >= 2) {
+                rowData.push(studentInfo[0].textContent); // Student ID
+                rowData.push(studentInfo[1].textContent); // Student Name
+              } else {
+                rowData.push(cell.textContent);
+              }
+            } else {
+              // For score cells, get the input value
+              const input = cell.querySelector('input');
+              rowData.push(input ? input.value : cell.textContent);
+            }
+          });
+          
+          data.push(rowData);
+        });
+        
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        
+        // Get current date for filename
+        const today = new Date();
+        const dateStr = today.toISOString().split('T')[0];
+        
+        // Get school and class info for filename
+        const schoolName = document.getElementById('schoolName').value;
+        const className = document.getElementById('class').value;
+        const subject = document.getElementById('subject').value;
+        
+        // Create filename
+        const filename = `${schoolName}_${className}_${subject}_Assessment_${dateStr}.xlsx`;
+        
+        XLSX.utils.book_append_sheet(wb, ws, 'Assessment Data');
+        XLSX.writeFile(wb, filename);
       }
     </script>
 </body>
